@@ -5,12 +5,25 @@ import Logo from '@assets/logo/photo_2024-10-12_14-12-48.jpg'
 import { screenHeight, screenWidth } from "utils/Scaling";
 import GeoLocation from '@react-native-community/geolocation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { resetAndNavigate } from "utils/NavigationUtils";
 const SplashScreen = () => {
+
+  const tokenCheck = async () => {
+    const accessToken = await AsyncStorage.getItem('access-token');
+    console.log('Retrieved token:', accessToken);
+    if (accessToken) {
+      resetAndNavigate('Extra')
+      return true;
+    } 
+      resetAndNavigate("CustomerLogin");
+      return false
+    
+  };
 
   useEffect(() => {
     const requestLocationPermission = async () => {
       try {
-        // await tokenCheck();
+        await tokenCheck();
         const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
           {
