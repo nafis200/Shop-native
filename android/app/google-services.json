@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "175986965000",
+    "project_id": "native-project-30757",
+    "storage_bucket": "native-project-30757.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:175986965000:android:c75371dcc3fa93eb69efbd",
+        "android_client_info": {
+          "package_name": "com.practice"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6VB0HxXd-KVYIAshvvuD5kN65ilbNfPc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
