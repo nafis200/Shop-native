@@ -9,6 +9,8 @@ import DeliveryLogin from "features/deliveryLogin/DeliveryLogin";
 import CustomerLogin from "features/customerlogin/CustomerLogin";
 import { navigationRef } from './../utils/NavigationUtils';
 import Register from "Register/Register";
+import ProductDashboard from "dashboard/ProductDashboard";
+import DeliveryDashboard from './../dashboard/DeliveryDashboard';
 
 
 const Stack = createNativeStackNavigator();
@@ -41,6 +43,9 @@ const Navigation = () => {
                         animation: 'fade'
                     }}
                     name="Register" component={Register} />
+                  
+                  <Stack.Screen name="ProductDashboard" component={ProductDashboard} />
+                  <Stack.Screen name="DeliveryDashboard" component={DeliveryDashboard} /> 
 
             
             </Stack.Navigator>

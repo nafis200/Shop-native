@@ -1,4 +1,4 @@
-import { Animated, StyleSheet, Text, View, Image, TouchableOpacity,Alert } from "react-native";
+import { Animated, StyleSheet, Text, View, Image, TouchableOpacity, Alert } from "react-native";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { GestureHandlerRootView, PanGestureHandler, State } from "react-native-gesture-handler";
 import CustomSafeAreaView from "components/customsafeareaview/CustomSafeAreaVIew";
@@ -9,18 +9,28 @@ import CustomText from "components/ui/CustomText";
 import CustomInput from "components/ui/CustomInput";
 import CustomButton from "components/ui/CustomButton";
 import { resetAndNavigate } from "utils/NavigationUtils";
-
+import { useQuery } from "@tanstack/react-query";
+import useAxiospublic from "hooks/useAxiosPublic";
 
 const CustomerLogin = () => {
+  const [Email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [gestureSequence, setGestureSequence] = useState([]);
 
-  const [Email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [gestureSequence, setGestureSequence] = useState([])
-
-  const keyboardHeight = useKeyboardHeight()
-
+  const keyboardHeight = useKeyboardHeight();
   const animatedValue = useRef(new Animated.Value(0)).current;
+  const axiosPublic = useAxiospublic();
+  const { signInUser, logout } = useContext(AuthContext);
+
+  const { data: Data = [], isLoading, error } = useQuery({
+    queryKey: ['products', Email],
+    queryFn: async () => {
+      const res = await axiosPublic.get(`/users/${Email}`);
+      return res.data;
+    },
+    enabled: !!Email,
+  });
 
   useEffect(() => {
     if (keyboardHeight === 0) {
@@ -38,11 +48,21 @@ const CustomerLogin = () => {
     }
   }, [keyboardHeight]);
 
-
-  const { signInUser} = useContext(AuthContext)
   const handleLogin = async () => {
+    setLoading(true);
     try {
       await signInUser(Email, password);
+
+      if (isLoading) {
+        console.log("Loading...");
+        return;
+      }
+
+      if (error) {
+        throw new Error("Data fetch error");
+      }
+
+      console.log(Data);
       Alert.alert(
         "Alert Title",
         "Login successfully",
@@ -50,7 +70,14 @@ const CustomerLogin = () => {
           { text: "OK", onPress: () => console.log("OK Pressed") }
         ]
       );
-      resetAndNavigate('ProductDashboard')
+     
+      if(Data.role === 'customer'){
+        resetAndNavigate('ProductDashboard');
+      }
+      else{
+        resetAndNavigate('DeliveryDashboard')
+      }
+      
     } catch (error) {
       Alert.alert(
         "Alert Title",
@@ -59,36 +86,31 @@ const CustomerLogin = () => {
           { text: "OK", onPress: () => console.log("OK Pressed") }
         ]
       );
+    } finally {
+      setLoading(false);
     }
   };
 
-
   const handleGesture = ({ nativeEvent }) => {
-
-
     if (nativeEvent.state === State.END) {
-      const { translationX, translationY } = nativeEvent
-      let direction = ''
+      const { translationX, translationY } = nativeEvent;
+      let direction = '';
       if (Math.abs(translationX) > Math.abs(translationY)) {
-        direction = translationX > 0 ? 'right' : 'left'
-      }
-      else {
-        direction = translationY > 0 ? 'down' : 'up'
+        direction = translationX > 0 ? 'right' : 'left';
+      } else {
+        direction = translationY > 0 ? 'down' : 'up';
       }
 
       console.log(translationX, translationY, direction);
-
-      const newSequence = [...gestureSequence, direction].slice(-5)
-
-      setGestureSequence(newSequence)
+      const newSequence = [...gestureSequence, direction].slice(-5);
+      setGestureSequence(newSequence);
 
       if (newSequence.join(' ') === 'up up down left right') {
-        setGestureSequence([])
-        resetAndNavigate('DeliveryLogin')
+        setGestureSequence([]);
+        resetAndNavigate('DeliveryLogin');
       }
-
     }
-  }
+  };
 
   return (
     <GestureHandlerRootView style={styles.container}>
@@ -107,45 +129,31 @@ const CustomerLogin = () => {
                 <Image source={require('../../assets/image1/01.png')} style={styles.logo} />
                 <CustomText variant="h2" style={{ color: 'black', fontWeight: 'bold' }}>Login or signup</CustomText>
                 <CustomInput
-                  onChangeText={(text) => { setEmail(text) }}
+                  onChangeText={setEmail}
                   onClear={() => setEmail('')}
                   value={Email}
-                  left={
-                    <CustomText
-                      style={styles.phoneText}
-                      variant="h6"
-                    >
-                    </CustomText>}
                   placeholder="enter your Email"
-                  style={{color:'blue'}}
+                  style={{ color: 'blue' }}
                 />
                 <CustomInput
-                  onChangeText={(text) => { setPassword(text) }}
+                  onChangeText={setPassword}
                   onClear={() => setPassword('')}
                   value={password}
-                  left={
-                    <CustomText
-                      style={styles.phoneText}
-                      variant="h6"
-                    >
-                    </CustomText>}
                   placeholder="enter your password"
-
                 />
-
-                <CustomButton title='Login' disabled={password.length < 6}
+                <CustomButton 
+                  title='Login' 
+                  disabled={password.length < 6 || loading}
                   loading={loading}
-                  onPress={() => handleLogin()}
+                  onPress={handleLogin}
                 />
                 <View style={{ flexDirection: 'row' }}>
-                  <Text style={{ color: 'black', marginRight: 10 }}>Have not any Accout Please</Text>
+                  <Text style={{ color: 'black', marginRight: 10 }}>Have not any Account Please</Text>
                   <TouchableOpacity onPress={() => resetAndNavigate('Register')}>
                     <Text style={styles.link}>Register</Text>
                   </TouchableOpacity>
                 </View>
-
               </View>
-
             </Animated.ScrollView>
           </PanGestureHandler>
         </CustomSafeAreaView>
@@ -177,28 +185,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     paddingHorizontal: 10,
-    marginTop:250
-  },
-  phoneText: {
-    marginLeft: 10,
-    color: 'black',
+    marginTop: 250,
   },
   link: {
     color: 'blue',
     textDecorationLine: 'underline',
-  },
-  footer: {
-    borderTopWidth: 0.8,
-    borderColor: 'black',
-    paddingBottom: 10,
-    zIndex: 22,
-    position: 'absolute',
-    bottom: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 10,
-    backgroundColor: '#f8f9fc',
-    width: '100%',
-    marginTop: 40,
   },
 });
