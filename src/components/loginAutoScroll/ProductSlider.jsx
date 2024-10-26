@@ -16,9 +16,11 @@ const ProductSlider = () => {
         return result
   },[])
 
+  
+
   return (
     <View pointerEvents="none">
-      <AutoScroll style={styles.autoScroll} endPaddingWidth={0} duration={10000}>
+      <AutoScroll style={styles.autoScroll} endPaddingWidth={0}  duration={10000}>
          <View style={styles.gridContainer}>
            {
              rows?.map((row,rowIndex)=>{
