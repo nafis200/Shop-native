@@ -1,4 +1,4 @@
-import { Animated, StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import { Animated, StyleSheet, Text, View, Image, TouchableOpacity,Alert } from "react-native";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { GestureHandlerRootView, PanGestureHandler, State } from "react-native-gesture-handler";
 import CustomSafeAreaView from "components/customsafeareaview/CustomSafeAreaVIew";
@@ -8,6 +8,7 @@ import { AuthContext } from "provider/AuthProvider";
 import CustomText from "components/ui/CustomText";
 import CustomInput from "components/ui/CustomInput";
 import CustomButton from "components/ui/CustomButton";
+import { resetAndNavigate } from "utils/NavigationUtils";
 
 
 const CustomerLogin = () => {
