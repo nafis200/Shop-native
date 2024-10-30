@@ -1,6 +1,6 @@
 
 import { Image, StyleSheet, Text, View,Alert, PermissionsAndroid, Linking } from "react-native";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import Logo from '@assets/logo/photo_2024-10-12_14-12-48.jpg'
 import { screenHeight, screenWidth } from "utils/Scaling";
 import GeoLocation from '@react-native-community/geolocation';
