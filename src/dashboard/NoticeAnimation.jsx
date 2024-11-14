@@ -1,39 +1,35 @@
-
-import { StyleSheet, Text, View, Animated as RNAnimated  } from "react-native";
+import { StyleSheet, Text, View,Animated as RNAnimated } from "react-native";
 import React from "react";
-import { NoticeHeight } from "utils/Scaling";
 import Notice from "./Notice";
+import { NoticeHeight } from "utils/Scaling";
 
 const Notice_HEIGHT = -(NoticeHeight + 12);
 
-const NoticeAnimation = ({ noticePosition, children }) => {
+const NoticeAnimation = ({noticepostition,children}) => {
   return (
-    <View style={styles.container}>
-      <RNAnimated.View 
-        style={[
-          styles.noticeContainer,{
-            transform: [{ translateY: noticePosition }]  
-          }
-        ]}
-      >
-  
+    <View style={styles.container}>      
+    <RNAnimated.View 
+    style={[
+    {
+      transform: [{translateY: noticepostition}]
+    }, styles.noticeContainer]}
+    >
         <Notice/>
-      </RNAnimated.View>
+    </RNAnimated.View>
 
-      <RNAnimated.View 
-        style={[
-          styles.contentContainer, 
-          {
-            paddingTop: noticePosition.interpolate({
-              inputRange: [Notice_HEIGHT, 0], 
-              outputRange: [0, NoticeHeight + 20]
-            }),
-          }
-        ]}
-      >
-        
-        {children}
-      </RNAnimated.View>
+    <RNAnimated.View
+    style={[
+      styles.contentContainer,{
+        paddingTop: noticepostition.interpolate({
+          inputRange: [Notice_HEIGHT, 0], 
+          outputRange: [0, NoticeHeight + 20]
+        }),
+      }
+    ]}
+    >
+      {children}
+    </RNAnimated.View>
+  
     </View>
   );
 };
@@ -41,18 +37,18 @@ const NoticeAnimation = ({ noticePosition, children }) => {
 export default NoticeAnimation;
 
 const styles = StyleSheet.create({
-    noticeContainer: {
-      width: '100%',
-      zIndex: 999,
-      position: 'absolute',
-    },
-    contentContainer: {
-      flex: 1,
-      width: '100%',
-    },
-    container: {
-      flex: 1,
-      backgroundColor: '#fff',
-    },
-  });
-  
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  noticeContainer: {
+    width: '100%',
+    zIndex: 999,
+    position: 'absolute',
+  },
+  contentContainer: {
+    flex: 1,
+    width: '100%',
+  }
+
+});

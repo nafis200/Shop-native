@@ -92,6 +92,7 @@ const CustomerLogin = () => {
   };
 
   const handleGesture = ({ nativeEvent }) => {
+    
     if (nativeEvent.state === State.END) {
       const { translationX, translationY } = nativeEvent;
       let direction = '';
@@ -114,16 +115,15 @@ const CustomerLogin = () => {
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <View style={styles.container}>
+      {/* <View style={styles.container}> */}
         <CustomSafeAreaView>
           <ProductSlider />
           <PanGestureHandler onHandlerStateChange={handleGesture}>
             <Animated.ScrollView
-              bounces={false}
+              style={{transform:[{translateY:animatedValue}]}}
               keyboardDismissMode='on-drag'
               keyboardShouldPersistTaps='handled'
               contentContainerStyle={styles.subContainer}
-              style={{ transform: [{ translateY: animatedValue }] }}
             >
               <View style={styles.content}>
                 <Image source={require('../../assets/image1/01.png')} style={styles.logo} />
@@ -157,7 +157,7 @@ const CustomerLogin = () => {
             </Animated.ScrollView>
           </PanGestureHandler>
         </CustomSafeAreaView>
-      </View>
+      {/* </View> */}
     </GestureHandlerRootView>
   );
 };
